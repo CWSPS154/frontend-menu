@@ -53,6 +53,7 @@ class MenuResource extends Resource
                     ->native(false),
                 Forms\Components\TextInput::make('url')
                     ->label(__('filament-frontend-menu::menu.url'))
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\Toggle::make('target')
                     ->label(__('filament-frontend-menu::menu.target'))

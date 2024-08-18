@@ -25,7 +25,11 @@ class MenuWidget extends BaseWidget
         return [
             TextInput::make('title')
                 ->required()
-                ->label(__('filament-frontend-menu::menu.title'))
+                ->label(__('filament-frontend-menu::menu.title')),
+            TextInput::make('url')
+                ->label(__('filament-frontend-menu::menu.url'))
+                ->required()
+                ->maxLength(255),
         ];
     }
 
