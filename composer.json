@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "CWSPS154\\FilamentFrontendMenu\\": "src/"
+            "CWSPS154\\FilamentFrontendMenu\\": "src/",
+            "CWSPS154\\FilamentFrontendMenu\\Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "src/helper.php"
