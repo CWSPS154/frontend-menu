@@ -46,6 +46,7 @@ return [
     'layout' => null,
     'cluster' => null,
     'navigation' => [
+        'title' => 'filament-frontend-menu::menu.menu.title',
         'group' => 'filament-frontend-menu::menu.content',
         'label' => 'filament-frontend-menu::menu.menu',
         'icon' => 'heroicon-o-queue-list',

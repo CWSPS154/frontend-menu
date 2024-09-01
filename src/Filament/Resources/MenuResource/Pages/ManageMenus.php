@@ -11,6 +11,7 @@ use CWSPS154\FilamentFrontendMenu\Filament\Resources\MenuResource;
 use CWSPS154\FilamentFrontendMenu\Filament\Resources\MenuResource\Widgets\MenuWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ManageMenus extends ManageRecords
 {
@@ -33,5 +34,10 @@ class ManageMenus extends ManageRecords
     public function updated($name)
     {
         $this->dispatch('updateMenuWidget');
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return __(config('filament-frontend-menu.navigation.title'));
     }
 }

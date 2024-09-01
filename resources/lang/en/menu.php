@@ -7,6 +7,7 @@
 
 return [
     'menu' => 'Menu',
+    'menu.title' => 'Menus',
     'content' => 'Content',
     'title' => 'Title',
     'parent' => 'Parent',
