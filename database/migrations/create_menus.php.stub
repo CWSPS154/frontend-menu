@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright CWSPS154. All rights reserved.
+ * @auth CWSPS154
+ * @link  https://github.com/CWSPS154
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

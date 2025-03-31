@@ -1,15 +1,16 @@
 <?php
+
 /*
  * Copyright CWSPS154. All rights reserved.
  * @auth CWSPS154
  * @link  https://github.com/CWSPS154
  */
 
-namespace CWSPS154\FilamentFrontendMenu\Filament\Resources\MenuResource\Widgets;
+namespace CWSPS154\FrontendMenu\Filament\Resources\MenuResource\Widgets;
 
-use CWSPS154\FilamentFrontendMenu\Filament\Resources\MenuResource;
-use CWSPS154\FilamentFrontendMenu\Models\Menu;
+use CWSPS154\FrontendMenu\Models\Menu;
 use Filament\Forms\Components\TextInput;
+use SolutionForest\FilamentTree\Components\Tree;
 use SolutionForest\FilamentTree\Widgets\Tree as BaseWidget;
 
 class MenuWidget extends BaseWidget
@@ -25,34 +26,43 @@ class MenuWidget extends BaseWidget
         return [
             TextInput::make('title')
                 ->required()
-                ->label(__('filament-frontend-menu::menu.title')),
+                ->label(__('frontend-menu::menu.title')),
             TextInput::make('url')
-                ->label(__('filament-frontend-menu::menu.url'))
+                ->label(__('frontend-menu::menu.url'))
                 ->required()
                 ->maxLength(255),
         ];
     }
 
-    /**
-     * @return string|null
-     */
     public function getTreeTitle(): ?string
     {
-        return __(config('filament-frontend-menu.widget.label'));
+        return __('frontend-menu::menu.widget.menu');
     }
 
     protected function hasDeleteAction(): bool
     {
-        return MenuResource::checkAccess('getCanDelete');
+        return $this->getResource()::checkAccess('getCanDelete');
     }
 
     public function hasEditAction(): bool
     {
-        return MenuResource::checkAccess('getCanEdit');
+        return $this->getResource()::checkAccess('getCanEdit');
     }
 
     public static function getMaxDepth(): int
     {
-        return config('filament-frontend-menu.widget.max-depth');
+        return config('frontend-menu.max-depth', 2);
+    }
+
+    public static function getResource(): string
+    {
+        return config('frontend-menu.menu-resource');
+    }
+
+    public function getTree(): Tree
+    {
+        $this->dispatch('refreshTable');
+
+        return parent::getTree();
     }
 }

@@ -7,55 +7,69 @@ A filament package for updating frontend page menu's
 
 Install Using Composer
 
-```
-composer require cwsps154/filament-frontend-menu
+```shell
+composer require cwsps154/frontend-menu
 ```
 Run
 
-```
-php artisan filament-frontend-menu:install
+```shell
+php artisan frontend-menu:install
 ```
 
 ## Usage/Examples
 
 Add this into your Filament `PannelProvider` class `panel()`
-```
-$panel->plugins([FilamentFrontendMenuPlugin::make()]);
+```php
+use CWSPS154\FrontendMenu\FrontendMenuPlugin;
+
+$panel->plugins([FrontendMenuPlugin::make()]);
 ```
 
 You can limit the access to the resources
-```
-FilamentFrontendMenuPlugin::make()
-                        ->canViewAny('have-access', 'view-menu')
-                        ->canCreate('have-access', 'create-menu')
-                        ->canEdit('have-access', 'edit-menu')
-                        ->canDelete('have-access', 'delete-menu'),
+```php
+use CWSPS154\FrontendMenu\FrontendMenuPlugin;
 
+FrontendMenuPlugin::make()
+    ->canViewAny(function () {
+        return true;
+    })
+    ->canCreate(function () {
+        return true;
+    })
+    ->canEdit(function () {
+        return true;
+    })
+    ->canDelete(function () {
+        return true;
+    })
 ```
 
-You can publish the config file `filament-frontend-menu.php`, by running this command
+If you are using `cwsps154/users-roles-permissions` plugin you can use like this
 
+```php
+use CWSPS154\FrontendMenu\Models\Menu;
+use CWSPS154\FrontendMenu\FrontendMenuPlugin;
+use CWSPS154\UsersRolesPermissions\UsersRolesPermissionsServiceProvider;
+
+FrontendMenuPlugin::make()
+    ->canViewAny(UsersRolesPermissionsServiceProvider::HAVE_ACCESS_GATE, Menu::VIEW_MENU)
+    ->canCreate(UsersRolesPermissionsServiceProvider::HAVE_ACCESS_GATE, Menu::CREATE_MENU)
+    ->canEdit(UsersRolesPermissionsServiceProvider::HAVE_ACCESS_GATE, Menu::EDIT_MENU)
+    ->canDelete(UsersRolesPermissionsServiceProvider::HAVE_ACCESS_GATE, Menu::DELETE_MENU),
 ```
-php artisan vendor:publish --tag=filament-frontend-menu-config
+
+You can publish the config file `frontend-menu.php`, by running this command
+
+```shell
+php artisan vendor:publish --tag=frontend-menu-config
 ```
 
 which contains these settings
 
-```
+```php
 return [
-    'layout' => null,
-    'cluster' => null,
-    'navigation' => [
-        'title' => 'filament-frontend-menu::menu.menu.title',
-        'group' => 'filament-frontend-menu::menu.content',
-        'label' => 'filament-frontend-menu::menu.menu',
-        'icon' => 'heroicon-o-queue-list',
-        'sort' => 100,
-    ],
-    'widget' => [
-        'label' => 'filament-frontend-menu::menu.widget.menu',
-        'max-depth' => 2,
-    ]
+    'menu-resource' => CWSPS154\FrontendMenu\Filament\Resources\MenuResource::class,
+    'max-depth' => 3,
 ];
 ```
 For More details about the widget check this package `solution-forest/filament-tree`

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright CWSPS154. All rights reserved.
  * @auth CWSPS154
@@ -6,8 +7,7 @@
  */
 
 return [
-    'menu' => 'Menu',
-    'menu.title' => 'Menus',
+    'menu' => 'Frontend Menu',
     'content' => 'Content',
     'title' => 'Title',
     'parent' => 'Parent',

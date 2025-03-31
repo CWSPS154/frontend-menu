@@ -1,15 +1,16 @@
 <?php
+
 /*
  * Copyright CWSPS154. All rights reserved.
  * @auth CWSPS154
  * @link  https://github.com/CWSPS154
  */
 
-namespace CWSPS154\FilamentFrontendMenu\Filament\Resources;
+namespace CWSPS154\FrontendMenu\Filament\Resources;
 
-use CWSPS154\FilamentFrontendMenu\Filament\Resources\MenuResource\Pages\ManageMenus;
-use CWSPS154\FilamentFrontendMenu\FilamentFrontendMenuServiceProvider;
-use CWSPS154\FilamentFrontendMenu\Models\Menu;
+use CWSPS154\FrontendMenu\Filament\Resources\MenuResource\Pages\ManageMenus;
+use CWSPS154\FrontendMenu\FrontendMenuServiceProvider;
+use CWSPS154\FrontendMenu\Models\Menu;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,37 +30,40 @@ class MenuResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $cluster = null;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label(__('filament-frontend-menu::menu.title'))
+                    ->label(__('frontend-menu::menu.title'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('order')
-                    ->label(__('filament-frontend-menu::menu.order'))
+                    ->label(__('frontend-menu::menu.order'))
                     ->required()
                     ->numeric()
                     ->default(0),
                 Forms\Components\Select::make('parent_id')
-                    ->label(__('filament-frontend-menu::menu.parent'))
+                    ->label(__('frontend-menu::menu.parent'))
                     ->relationship('parent', 'title', function ($query) {
-                        if (config('filament-frontend-menu.widget.max-depth') == 2) {
+                        if (config('frontend-menu.max-depth') == 2) {
                             return $query->doesntHave('parent');
                         }
+
                         return $query;
-                    },true)
+                    }, true)
                     ->native(false),
                 Forms\Components\TextInput::make('url')
-                    ->label(__('filament-frontend-menu::menu.url'))
+                    ->label(__('frontend-menu::menu.url'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Toggle::make('target')
-                    ->label(__('filament-frontend-menu::menu.target'))
+                    ->label(__('frontend-menu::menu.target'))
                     ->inline(false),
                 Forms\Components\Toggle::make('status')
-                    ->label(__('filament-frontend-menu::menu.status'))
+                    ->label(__('frontend-menu::menu.status'))
                     ->required()
                     ->inline(false)
                     ->default(true),
@@ -71,31 +75,31 @@ class MenuResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('filament-frontend-menu::menu.title'))
+                    ->label(__('frontend-menu::menu.title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.title')
-                    ->label(__('filament-frontend-menu::menu.parent'))
+                    ->label(__('frontend-menu::menu.parent'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order')
-                    ->label(__('filament-frontend-menu::menu.order'))
+                    ->label(__('frontend-menu::menu.order'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('url')
-                    ->label(__('filament-frontend-menu::menu.url'))
+                    ->label(__('frontend-menu::menu.url'))
                     ->searchable(),
                 Tables\Columns\IconColumn::make('target')
-                    ->label(__('filament-frontend-menu::menu.target'))
+                    ->label(__('frontend-menu::menu.target'))
                     ->boolean(),
                 Tables\Columns\IconColumn::make('status')
-                    ->label(__('filament-frontend-menu::menu.status'))
+                    ->label(__('frontend-menu::menu.status'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('filament-frontend-menu::menu.created.at'))
+                    ->label(__('frontend-menu::menu.created.at'))
                     ->dateTime(self::DEFAULT_DATETIME_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('filament-frontend-menu::menu.updated.at'))
+                    ->label(__('frontend-menu::menu.updated.at'))
                     ->dateTime(self::DEFAULT_DATETIME_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -106,8 +110,8 @@ class MenuResource extends Resource
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make()->slideOver(),
-                    Tables\Actions\DeleteAction::make()
-                ])
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -125,44 +129,31 @@ class MenuResource extends Resource
         ];
     }
 
-    public function getLayout(): string
-    {
-        if (config('filament-frontend-menu.layout')) {
-            return config('filament-frontend-menu.layout');
-        }
-        return parent::getLayout();
-    }
-
-    public static function getCluster(): ?string
-    {
-        return config('filament-frontend-menu.cluster');
-    }
-
     public static function getNavigationLabel(): string
     {
-        return __(config('filament-frontend-menu.navigation.label'));
+        return __('frontend-menu::menu.menu');
     }
 
     public static function getNavigationIcon(): string|Htmlable|null
     {
-        return config('filament-frontend-menu.navigation.icon');
+        return 'heroicon-o-queue-list';
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __(config('filament-frontend-menu.navigation.group'));
+        return __('frontend-menu::menu.content');
     }
 
     public static function getNavigationSort(): ?int
     {
-        return config('filament-frontend-menu.navigation.sort');
+        return 100;
     }
 
-    public static function checkAccess(string $method, Model $record = null): bool
+    public static function checkAccess(string $method, ?Model $record = null): bool
     {
-        $plugin = Filament::getCurrentPanel()?->getPlugin(FilamentFrontendMenuServiceProvider::$name);
+        $plugin = Filament::getCurrentPanel()?->getPlugin(FrontendMenuServiceProvider::$name);
         $access = $plugin->$method();
-        if (!empty($access) && is_array($access) && isset($access['ability'], $access['arguments'])) {
+        if (! empty($access) && is_array($access) && isset($access['ability'], $access['arguments'])) {
             return Gate::allows($access['ability'], $access['arguments']);
         }
 

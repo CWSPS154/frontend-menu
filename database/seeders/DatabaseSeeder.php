@@ -1,11 +1,12 @@
 <?php
+
 /*
  * Copyright CWSPS154. All rights reserved.
  * @auth CWSPS154
  * @link  https://github.com/CWSPS154
  */
 
-namespace CWSPS154\FilamentFrontendMenu\Database\Seeders;
+namespace CWSPS154\FrontendMenu\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            FrontendMenuPermissionSeeder::class
+            FrontendMenuPermissionSeeder::class,
         ]);
     }
 }
